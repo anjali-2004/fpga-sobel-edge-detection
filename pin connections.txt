@@ -1,0 +1,31 @@
+Here are the connections side by side. Check each wire against it, especially the data bus order.
+
+| OV7670 module pin | Direction | Verilog signal | GPIO bit | FPGA pin | JP5 header pin |
+|---|---|---|---|---|---|
+| SIOC / SCL | FPGA → cam | `cam_sioc` | GPIO[0] | AB22 | 1 |
+| SIOD / SDA | bidirectional | `GPIO[1]` | GPIO[1] | AC15 | 2 |
+| VSYNC / VS | cam → FPGA | `cam_vsync` | GPIO[2] | AB21 | 3 |
+| HREF / HS | cam → FPGA | `cam_href` | GPIO[3] | Y17 | 4 |
+| PCLK | cam → FPGA | `cam_pclk` | GPIO[4] | AC21 | 5 |
+| XCLK / MCLK | FPGA → cam | `cam_xclk` | GPIO[5] | Y16 | 6 |
+| D0 | cam → FPGA | `cam_d[0]` | GPIO[6] | AD21 | 7 |
+| D1 | cam → FPGA | `cam_d[1]` | GPIO[7] | AE16 | 8 |
+| D2 | cam → FPGA | `cam_d[2]` | GPIO[8] | AD15 | 9 |
+| D3 | cam → FPGA | `cam_d[3]` | GPIO[9] | AE15 | 10 |
+| D4 | cam → FPGA | `cam_d[4]` | GPIO[10] | AC19 | 13 |
+| D5 | cam → FPGA | `cam_d[5]` | GPIO[11] | AF16 | 14 |
+| D6 | cam → FPGA | `cam_d[6]` | GPIO[12] | AD19 | 15 |
+| D7 | cam → FPGA | `cam_d[7]` | GPIO[13] | AF15 | 16 |
+| RESET | FPGA → cam | `cam_reset` | GPIO[14] | AF24 | 17 |
+| PWDN | FPGA → cam | `cam_pwdn` | GPIO[15] | AE21 | 18 |
+| 3.3V | power | | | | 29 |
+| GND | ground | | | | 12 (or 30) |
+
+## Notes
+
+- **Header pin numbers.** The GPIO bit and FPGA pin columns come from Terasic's pin list. The header pin column follows Terasic's standard 2x20 header layout: pins 1–10 are GPIO[0]–[9], pins 11 and 12 are 5 V and GND, pins 13–28 are GPIO[10]–[25], and pins 29 and 30 are 3.3 V and GND. I could only partly verify this from other Terasic boards, so confirm it against the pin arrangement figure in the DE2-115 manual or the silkscreen on your board.
+- **Power.** Use pin 29 (3.3 V), not pin 11 (5 V). The camera module is a 3.3 V device.
+- **SIOD pull-up.** SIOD needs a pull-up resistor (about 4.7 kΩ to 3.3 V) if your module doesn't have one.
+- **Module type.** This wiring is for the plain 18-pin OV7670 module. A module with a FIFO chip (labelled WEN, RRST, OE, RCLK) has different pins and won't work with this design.
+
+Since all four activity LEDs are on, most of these wires are probably right. A swapped pair, such as two data lines, would still light them. Tell me what the colour bars looked like with SW[2] up, and I'll go from there.
